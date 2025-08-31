@@ -116,3 +116,12 @@ p{
     text-align: center;
     border-top: 2px solid gainsboro; 
 }
+
+@media (max-width: 768px) {
+  .content {
+    padding: 10px;
+  }
+  iframe {
+    width: 100% !important;
+  }
+}
