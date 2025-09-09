@@ -3,19 +3,20 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>update glibc</title>
+
+	<style>
+	</style>
 </head>
 
 <body>
-	<article id="69ed73ad-4649-4a39-91a6-5067ddd5f33b" class="page sans">
-		<header>
-			<h1 class="page-title">update glibc</h1>
-		</header>
-		<div class="page-body">
-			<pre id="2f2c7472-693e-42d1-b7dc-d91a04f53754" class="code"><code>sudo apt-get upgrade libc6</code></pre>
-			<p id="feb1ba3c-7939-4295-9e0f-85c04b9d9907" class="">
+		<h1>gtest: Library not loaded: @rpath/libgtest-1.10.0.dylib. Reason: no LC_RPATH's found</h1>
+		<div>
+			<p>
+				在 CMakeLists.txt 阐明 gtest 的路径
 			</p>
+			set(GTest_DIR /usr/local/lib/cmake/GTest)
+ 
 		</div>
-	</article>
 </body>
 
 </html>

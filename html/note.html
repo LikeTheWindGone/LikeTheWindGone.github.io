@@ -1,15 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Note - LikeTheWindGone's Blog</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
-    <main class="content">
-        <h2>Note Page</h2>
-        <p>This is the Note page content.</p>
-    </main>
-</html>
+    <div class="layout">
+        <nav class="sidebar" id="sidebar">
+            <button class="toggle-btn" id="toggleBtn">&#9776;aaaa</button>
+            <ul>
+                <li><a href="/html/note/update-glibc.html" data-src="" target="leetcoding-iframe">gtest</a></li>
+                <li><a href="/html/note/gtest-rpath.html" data-src="" target="leetcoding-iframe">gtest2</a></li>
+            </ul>
+        </nav>
+        <div class="content">
+            <iframe name="leetcoding-iframe" id="leetcoding-iframe" style="width:100%;height:100vh;border:none;"></iframe>
+        </div>
+    </div>
+    <script>
+        document.getElementById('toggleBtn').onclick = function() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        };
+
+    </script>
+</body>
