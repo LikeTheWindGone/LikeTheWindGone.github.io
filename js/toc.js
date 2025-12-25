@@ -206,7 +206,6 @@ class AutoTOC {
 
     addEventListeners() {
         if (this.options.smoothScroll) {
-            // 平滑滚动
             const links = this.tocContainer.querySelectorAll('.toc-link');
             links.forEach(link => {
                 link.addEventListener('click', (e) => {
