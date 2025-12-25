@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <style type='text/css'></style>
+    <link rel='stylesheet' href='/css/base.css' />
+    <link rel='stylesheet' href='/css/toc.css' />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+
+
+    <title>example</title>
+</head>
+
+<body class='typora-export os-windows'>
+    <div class='typora-export-content'>
+        <div id='write'>
+            <h1 id='示例-markdown-文件'><span>示例 Markdown 文件</span></h1>
+            <p><span>这是一个简单的 Markdown 示例文件。</span></p>
+            <div id="toc"></div>
+
+            <h2 id='简介'><span>简介</span></h2>
+            <p><span>Markdown 是一种轻量级标记语言，适用于编写文档、笔记和博客。</span></p>
+            <h2 id='代码示例'><span>代码示例</span></h2>
+
+            <pre class="prism-code"><code class="language-javascript">// JavaScript 示例
+const users = [
+    { name: "Alice", age: 25 },
+    { name: "Bob", age: 30 }
+];
+const names = users.map(user => user.name);
+console.log(names);</code></pre>
+
+
+            <h2 id='列表'><span>列表</span></h2>
+            <ul>
+                <li>
+                    <p><span>项目一</span></p>
+                </li>
+                <li>
+                    <p><span>项目二</span></p>
+                </li>
+                <li>
+                    <p><span>项目三</span></p>
+                </li>
+            </ul>
+            <h2 id='引用'><span>引用</span></h2>
+            <blockquote>
+                <p><span>这是一个引用示例。</span></p>
+            </blockquote>
+            <h2 id='图片'><span>图片</span></h2>
+            <p><img src="https://www.markdownguide.org/assets/images/tux.png" alt="示例图片"></p>
+        </div>
+    </div>
+    <script src="/js/toc.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const autoTOC = new AutoTOC({
+                containerId: 'toc',
+                minHeaders: 2,
+                collapsible: true,
+                headerLevels: [2, 3, 4],
+                showBackToTop: false
+            });
+
+            autoTOC.init();
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+
+</html>

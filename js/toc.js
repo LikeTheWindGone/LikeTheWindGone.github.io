@@ -188,14 +188,16 @@ class AutoTOC {
         this.tocContainer.innerHTML = '';
 
         if (this.options.collapsible) {
-            const toggleBtn = document.createElement('button');
-            toggleBtn.className = 'toc-toggle';
-            toggleBtn.textContent = '折叠';
-            toggleBtn.addEventListener('click', () => {
-                tocList.classList.toggle('collapsed');
-                toggleBtn.textContent = tocList.classList.contains('collapsed') ? '展开' : '折叠';
+            titleElement.style.cursor = 'pointer';
+
+            titleElement.addEventListener('click', () => {
+                const isCollapsed = tocList.classList.contains('collapsed');
+                if (!isCollapsed) {
+                    tocList.classList.add('collapsed');
+                } else {
+                    tocList.classList.remove('collapsed');
+                }
             });
-            this.tocContainer.appendChild(toggleBtn);
         }
 
         this.tocContainer.appendChild(titleElement);
@@ -222,10 +224,8 @@ class AutoTOC {
                             behavior: 'smooth'
                         });
 
-                        // 更新活动链接
                         this.updateActiveLink(targetId);
 
-                        // 更新URL hash（但不触发滚动）
                         history.pushState(null, null, `#${targetId}`);
                     }
                 });
@@ -239,14 +239,12 @@ class AutoTOC {
         setTimeout(() => this.highlightCurrentSection(), 100);
     }
 
-    // 高亮当前章节
     highlightCurrentSection() {
         if (!this.headers.length) return;
 
         let currentId = null;
         const scrollPosition = window.scrollY + this.options.scrollOffset + 100;
 
-        // 找到当前可见的标题
         for (let i = this.headers.length - 1; i >= 0; i--) {
             const header = this.headers[i];
             if (header.element.offsetTop <= scrollPosition) {
@@ -255,7 +253,6 @@ class AutoTOC {
             }
         }
 
-        // 如果没有找到，使用第一个标题
         if (!currentId && this.headers.length > 0) {
             currentId = this.headers[0].id;
         }
@@ -263,7 +260,6 @@ class AutoTOC {
         this.updateActiveLink(currentId);
     }
 
-    // 更新活动链接
     updateActiveLink(activeId) {
         const links = this.tocContainer.querySelectorAll('.toc-link');
         links.forEach(link => {
@@ -284,7 +280,6 @@ class AutoTOC {
 
         document.body.appendChild(this.backToTopBtn);
 
-        // 显示/隐藏按钮
         window.addEventListener('scroll', () => {
             if (window.scrollY > 300) {
                 this.backToTopBtn.classList.add('visible');
@@ -293,7 +288,6 @@ class AutoTOC {
             }
         });
 
-        // 点击返回顶部
         this.backToTopBtn.addEventListener('click', () => {
             window.scrollTo({
                 top: 0,

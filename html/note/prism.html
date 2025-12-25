@@ -1,0 +1,50 @@
+<!-- 使用 Prism.js 的示例 -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>使用 Prism.js</title>
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <style>
+        .prism-code {
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        pre[class*="language-"] {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>使用 Prism.js 语法高亮</h1>
+    
+    <pre class="prism-code"><code class="language-python">
+def fibonacci(n):
+    if n <= 1:
+        return n
+    else:
+        return fibonacci(n-1) + fibonacci(n-2)
+
+print(fibonacci(10))
+    </code></pre>
+    
+    <pre class="prism-code"><code class="language-javascript">
+// JavaScript 示例
+const users = [
+    { name: "Alice", age: 25 },
+    { name: "Bob", age: 30 }
+];
+
+const names = users.map(user => user.name);
+console.log(names);
+    </code></pre>
+    
+    <!-- Prism.js 脚本 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>
