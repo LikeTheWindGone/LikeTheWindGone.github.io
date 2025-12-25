@@ -339,7 +339,7 @@ div.hr:focus {
 }
 
 #write pre {
-    white-space: pre-wrap;
+    white-space: nowrap;
 }
 
 #write.fences-no-line-wrapping pre {

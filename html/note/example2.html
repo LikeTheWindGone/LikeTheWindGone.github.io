@@ -16,32 +16,8 @@
         <div id='write'>
             <h1 id='示例-markdown-文件'><span>示例 Markdown 文件</span></h1>
             <p><span>这是一个简单的 Markdown 示例文件。</span></p>
-            <h2 id='目录'><span>目录</span></h2>
-            <ul>
-                <li>
-                    <p><a href='#示例-markdown-文件'><span>示例 Markdown 文件</span></a></p>
-                    <ul>
-                        <li>
-                            <p><a href='#目录'><span>目录</span></a></p>
-                        </li>
-                        <li>
-                            <p><a href='#简介'><span>简介</span></a></p>
-                        </li>
-                        <li>
-                            <p><a href='#代码示例'><span>代码示例</span></a></p>
-                        </li>
-                        <li>
-                            <p><a href='#列表'><span>列表</span></a></p>
-                        </li>
-                        <li>
-                            <p><a href='#引用'><span>引用</span></a></p>
-                        </li>
-                        <li>
-                            <p><a href='#图片'><span>图片</span></a></p>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+            <div id="toc"></div>
+
             <h2 id='简介'><span>简介</span></h2>
             <p><span>Markdown 是一种轻量级标记语言，适用于编写文档、笔记和博客。</span></p>
             <h2 id='代码示例'><span>代码示例</span></h2>
@@ -113,6 +89,20 @@
     <p><img src="https://www.markdownguide.org/assets/images/tux.png" alt="示例图片"></p>
     </div>
     </div>
+    <script src="/js/toc.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const autoTOC = new AutoTOC({
+                containerId: 'toc',
+                minHeaders: 2,
+                collapsible: true,
+                headerLevels: [2, 3, 4],
+                showBackToTop: false
+            });
+
+            autoTOC.init();
+        });
+    </script>
 </body>
 
 </html>
