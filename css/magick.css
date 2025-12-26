@@ -9,8 +9,9 @@
 
 /* Importing the fonts. */
 @import url('https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,400;0,700;1,400;1,700&family=Averia+Serif+Libre:ital,wght@0,300;0,700;1,300;1,700&family=Caveat&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,300;0,600;1,300;1,600&display=swap&family=Noto+Sans+Symbols+2&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100;300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@400;700&display=swap');
 
-/* Simple CSS Reset */
 * {
     margin: 0;
     padding: 0;
@@ -62,7 +63,7 @@ body {
     font-size: 1.8rem; /* 1 */
     background-color: var(--bg); /* 2 */
     color: var(--fg); /* 2 */
-    font-family: "Averia Serif Libre", serif; /* 3 */
+    font-family: "Averia Serif Libre", "Noto Sans SC", serif; /* 3 */
     font-style: normal; /* 3 */
     line-height: 2.2rem; /* 3 */
     font-weight: 300; /* 3 */
@@ -208,7 +209,7 @@ h3 {
 /* Add a decorative element before h3 headings. */
 h3:before {
     font-family: "Noto Sans Symbols 2", sans-serif;
-    content: "ðŸ™› ";
+    content: "🙛 ";
 }
 
 /* h4 headings are the same size as h3 headings, but italic and without the decorative element. */
@@ -229,7 +230,7 @@ header h1 {
 /* Additional decorations for the header h1 */
 header h1:before,
 header h1:after {
-    content: "âœ¦";
+    content: "✦";
     color: var(--fg);
     font-size: 1.5rem;
     vertical-align: middle;
@@ -263,7 +264,7 @@ header nav ul li a {
 
 /* Add a hover effect to the navigation links. */
 header nav ul li a::before {
-    content: "â¯ "; /* 1 */
+    content: "✦"; /* 1 */
     opacity: 0; /* 1 */
 }
 header nav ul li a:hover::before {
