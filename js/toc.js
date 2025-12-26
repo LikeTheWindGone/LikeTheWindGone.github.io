@@ -2,13 +2,14 @@ class AutoTOC {
     constructor(options = {}) {
         this.defaultOptions = {
             containerId: "toc",
-            tocTitle: "Table of Contents",
+            tocTitle: "Table of Contens",
             headerLevels: [2, 3, 4, 5, 6],
             minHeaders: 2,
             smoothScroll: true,
             scrollOffset: 20,
             showBackToTop: true,
-            collapsible: false
+            collapsible: false,
+            useSections: true
         };
         this.options = { ...this.defaultOptions, ...options };
         this.headers = [];
@@ -18,16 +19,14 @@ class AutoTOC {
 
     init() {
         this.collectHeaders();
+        
         if (this.headers.length < this.options.minHeaders) {
-            console.log(`标题数量不足 ${this.options.minHeaders} 个，不生成目录`);
             return;
         }
 
         this.createContainer();
         this.generateTOC();
-
-        // this.addStyles();
-
+        
         this.addEventListeners();
         if (this.options.showBackToTop) {
             this.createBackToTopButton();
@@ -35,28 +34,110 @@ class AutoTOC {
     }
 
     collectHeaders() {
+        if (this.options.useSections) {
+            this.collectSectionsOnly();
+            
+            if (this.headers.length >= this.options.minHeaders) {
+                return;
+            }
+            
+            this.headers = [];
+        }
+        
+        this.collectHeadersOnly();
+    }
+
+    collectSectionsOnly() {
+        const sections = document.querySelectorAll('section[id]');
+        
+        sections.forEach((section, index) => {
+            let title = this.getSectionTitle(section);
+            
+            if (!section.id) {
+                section.id = `section-${index + 1}`;
+            }
+            
+            const level = this.calculateSectionLevel(section);
+            
+            this.headers.push({
+                id: section.id,
+                text: title,
+                level: level,
+                element: section,
+                type: 'section'
+            });
+        });
+        
+        this.sortHeadersByPosition();
+    }
+
+    getSectionTitle(section) {
+        if (section.dataset.title) {
+            return section.dataset.title.trim();
+        }
+        
+        const firstHeader = section.querySelector('h1, h2, h3, h4, h5, h6');
+        if (firstHeader) {
+            return firstHeader.textContent.trim();
+        }
+        
+        return this.formatIdAsTitle(section.id);
+    }
+
+    calculateSectionLevel(section) {
+        let depth = 0;
+        let currentElement = section;
+        
+        while (currentElement.parentElement) {
+            if (currentElement.parentElement.tagName === 'SECTION') {
+                depth++;
+            }
+            currentElement = currentElement.parentElement;
+        }
+        
+        const level = Math.min(6, 2 + depth);
+        return level;
+    }
+
+    formatIdAsTitle(id) {
+        return id
+            .replace(/-/g, ' ')
+            .replace(/_/g, ' ')
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+    }
+
+    collectHeadersOnly() {
         const selector = this.options.headerLevels.map(level => `h${level}`).join(', ');
         const allHeaders = document.querySelectorAll(selector);
 
-        allHeaders.forEach(
-            (header, index) => {
-                if (!header.id) {
-                    let id = header.textContent.toLowerCase()
-                        .replace(/[^\w\u4e00-\u9fa5]+/g, '-')
-                        .replace(/^-|-$/g, '');
-                    if (!id || document.getElementById(id)) {
-                        id = `header-${index + 1}`;
-                    }
-                    header.id = id;
+        allHeaders.forEach((header, index) => {
+            if (!header.id) {
+                let id = header.textContent.toLowerCase()
+                    .replace(/[^\w\u4e00-\u9fa5]+/g, '-')
+                    .replace(/^-|-$/g, '');
+                if (!id || document.getElementById(id)) {
+                    id = `header-${index + 1}`;
                 }
-                this.headers.push({
-                    id: header.id,
-                    text: header.textContent.trim(),
-                    level: parseInt(header.tagName.charAt(1)),
-                    element: header
-                });
+                header.id = id;
             }
-        );
+            this.headers.push({
+                id: header.id,
+                text: header.textContent.trim(),
+                level: parseInt(header.tagName.charAt(1)),
+                element: header,
+                type: 'header'
+            });
+        });
+    }
+
+    sortHeadersByPosition() {
+        this.headers.sort((a, b) => {
+            const aPos = a.element.getBoundingClientRect().top + window.pageYOffset;
+            const bPos = b.element.getBoundingClientRect().top + window.pageYOffset;
+            return aPos - bPos;
+        });
     }
 
     createContainer() {
@@ -66,7 +147,7 @@ class AutoTOC {
             container = document.createElement('div');
             container.id = this.options.containerId;
 
-            const firstHeader = document.querySelector('h1, h2');
+            const firstHeader = document.querySelector('h1, h2, section[id]');
             if (firstHeader) {
                 firstHeader.parentNode.insertBefore(container, firstHeader.nextSibling);
             } else {
@@ -77,73 +158,8 @@ class AutoTOC {
         this.tocContainer = container;
     }
 
-    /*generateTOC() {
-        this.tocContainer.innerHTML = '';
-
-        const titleElement = document.createElement('h2');
-        titleElement.className = 'toc-title';
-        titleElement.textContent = this.options.tocTitle;
-
-        if (this.options.collapsible) {
-            const toggleBtn = document.createElement('button');
-            toggleBtn.className = 'toc-toggle';
-            toggleBtn.textContent = '折叠';
-            this.tocContainer.appendChild(toggleBtn);
-        }
-
-        let tocHTML = '';
-        let currentLevel = 2;
-
-        this.headers.forEach((header, index) => {
-            if (header.level > currentLevel) {
-                tocHTML += '<ul class="toc-sublist">';
-            } else if (header.level < currentLevel) {
-                const diff = currentLevel - header.level;
-                for (let i = 0; i < diff; i++) {
-                    tocHTML += '</li></ul>';
-                }
-            } else if (index > 0) {
-                tocHTML += '</li>';
-            }
-
-            tocHTML += `
-                <li class="toc-item toc-level-${header.level}">
-                <a href="#${header.id}" class="toc-link" data-header-id="${header.id}">
-                    ${header.Text}
-                </a>`;
-
-            currentLevel = header.level;
-        });
-
-        for (let i = currentLevel; i > 2; i--) {
-            tocHTML += '</li></ul>';
-        }
-        if (this.headers.length > 0) {
-            tocHTML += '</li>';
-        }
-
-        const tocList = document.createElement('ul');
-        tocList.className = 'toc-list';
-        tocList.innerHTML = tocHTML;
-
-        if (this.options.collapsible) {
-            const toggleBtn = this.tocContainer.querySelector('.toc-toggle');
-            toggleBtn.addEventListener('click', () => {
-                tocList.classList.toggle('collapsed');
-                toggleBtn.textContent = tocList.classList.contains('collapsed') ? '展开' : '折叠';
-            });
-        }
-
-        const countBadge = document.createElement('span');
-        countBadge.className = 'toc-count';
-        countBadge.textContent = `(${this.headers.length}个章节)`;
-        titleElement.appendChild(countBadge);
-
-        this.tocContainer.appendChild(titleElement);
-        this.tocContainer.appendChild(tocList);
-    }*/
-
     generateTOC() {
+        
         const titleElement = document.createElement('h2');
         titleElement.className = 'toc-title';
         titleElement.textContent = this.options.tocTitle;
@@ -151,10 +167,12 @@ class AutoTOC {
         const tocList = document.createElement('ul');
         tocList.className = 'toc-list';
 
+        // 
         let currentLevel = 0;
         let currentParent = tocList;
 
         this.headers.forEach((header, index) => {
+            
             const listItem = document.createElement('li');
             listItem.className = `toc-item toc-level-${header.level}`;
 
@@ -163,7 +181,6 @@ class AutoTOC {
             link.textContent = header.text;
             link.className = 'toc-link';
             link.dataset.headerId = header.id;
-
 
             listItem.appendChild(link);
 
@@ -188,14 +205,32 @@ class AutoTOC {
         this.tocContainer.innerHTML = '';
 
         if (this.options.collapsible) {
+            const collapseIcon = document.createElement('span');
+            collapseIcon.className = 'toc-collapse-icon';
+            collapseIcon.innerHTML = '▼';
+            collapseIcon.style.cssText = `
+                margin-left: 10px;
+                font-size: 0.8em;
+                display: inline-block;
+                transition: transform 0.3s ease;
+            `;
+            
+            titleElement.appendChild(collapseIcon);
+            
             titleElement.style.cursor = 'pointer';
-
+            titleElement.style.position = 'relative';
+            
             titleElement.addEventListener('click', () => {
                 const isCollapsed = tocList.classList.contains('collapsed');
+                
                 if (!isCollapsed) {
                     tocList.classList.add('collapsed');
+                    collapseIcon.style.transform = 'rotate(-90deg)';
+                    collapseIcon.textContent = '▶';
                 } else {
                     tocList.classList.remove('collapsed');
+                    collapseIcon.style.transform = 'rotate(0deg)';
+                    collapseIcon.textContent = '▼';
                 }
             });
         }
@@ -203,6 +238,7 @@ class AutoTOC {
         this.tocContainer.appendChild(titleElement);
         this.tocContainer.appendChild(tocList);
     }
+
 
     addEventListeners() {
         if (this.options.smoothScroll) {
@@ -274,8 +310,8 @@ class AutoTOC {
         this.backToTopBtn = document.createElement('button');
         this.backToTopBtn.className = 'back-to-top';
         this.backToTopBtn.innerHTML = '↑';
-        this.backToTopBtn.title = '返回顶部';
-        this.backToTopBtn.setAttribute('aria-label', '返回顶部');
+        this.backToTopBtn.title = 'back-to-top';
+        this.backToTopBtn.setAttribute('aria-label', 'back-to-top');
 
         document.body.appendChild(this.backToTopBtn);
 
@@ -294,5 +330,19 @@ class AutoTOC {
             });
         });
     }
-
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const autoTOC = new AutoTOC({
+        // containerId: 'toc',
+        // tocTitle: '',
+        // minHeaders: 1,
+        // collapsible: true,
+        // useSections: true,
+        // showBackToTop: false
+    });
+    
+    autoTOC.init();
+});
+
+window.AutoTOC = AutoTOC;
